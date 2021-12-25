@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
+let colors = ["yellow", "red", "green", "blue"];
 function App() {
-  let colors = ["yellow", "red", "green", "blue"];
   const [gameStart, setGameStart] = useState(false);
   const [computerChoices, setComputerChoices] = useState([]);
   const [playerChoices, setPlayerChoices] = useState([]);
@@ -20,13 +20,16 @@ function App() {
     setComputerChoices([...computerChoices, randonIndex]);
     showComputerOrder([...computerChoices, randonIndex]);
   };
-  const showComputerOrder = (pathern) => {
+  const showComputerOrder = useCallback((pathern) => {
     for (let i = 0; i < pathern.length; i++) {
       setTimeout(() => {
         handleBlink(pathern[i]);
       }, 500 * (i + 1));
     }
-  };
+  }, []);
+  useEffect(() => {
+    showComputerOrder([0, 1, 2, 3, 1, 0, 2, 3]);
+  }, [showComputerOrder]);
   const handleClick = (ind) => {
     handleBlink(ind);
     let newPlayerChoices = [...playerChoices, ind];
@@ -46,9 +49,6 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    showComputerOrder([0, 1, 2, 3, 1, 0, 2, 3]);
-  }, []);
   const playGame = () => {
     setGameStart(true);
     setComputerChoices([2]);
